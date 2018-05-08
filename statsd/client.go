@@ -17,12 +17,15 @@ var bufPool = newBufferPool()
 // The StatSender interface wraps all the statsd metric methods
 type StatSender interface {
 	Inc(string, int64, float32) error
+	IncFloat(string, float64, float32) error
 	Dec(string, int64, float32) error
+	DecFloat(string, float64, float32) error
 	Gauge(string, int64, float32) error
 	GaugeDelta(string, int64, float32) error
 	GaugeFloat(string, float64, float32) error
 	GaugeFloatDelta(string, float64, float32) error
 	Timing(string, int64, float32) error
+	TimingFloat(string, float64, float32) error
 	TimingDuration(string, time.Duration, float32) error
 	Set(string, string, float32) error
 	SetInt(string, int64, float32) error
@@ -88,11 +91,35 @@ func (s *Client) Inc(stat string, value int64, rate float32) error {
 	return s.submit(stat, "", value, "|c", rate)
 }
 
+// IncFloat increments a statsd count type.
+// stat is a string name for the metric.
+// value is the integer value
+// rate is the sample rate (0.0 to 1.0)
+func (s *Client) IncFloat(stat string, value float64, rate float32) error {
+	if !s.includeStat(rate) {
+		return nil
+	}
+
+	return s.submit(stat, "", value, "|c", rate)
+}
+
 // Dec decrements a statsd count type.
 // stat is a string name for the metric.
 // value is the integer value.
 // rate is the sample rate (0.0 to 1.0).
 func (s *Client) Dec(stat string, value int64, rate float32) error {
+	if !s.includeStat(rate) {
+		return nil
+	}
+
+	return s.submit(stat, "", -value, "|c", rate)
+}
+
+// DecFloat decrements a statsd count type.
+// stat is a string name for the metric.
+// value is the integer value.
+// rate is the sample rate (0.0 to 1.0).
+func (s *Client) DecFloat(stat string, value float64, rate float32) error {
 	if !s.includeStat(rate) {
 		return nil
 	}
@@ -165,6 +192,18 @@ func (s *Client) GaugeFloatDelta(stat string, value float64, rate float32) error
 // delta is the time duration value in milliseconds
 // rate is the sample rate (0.0 to 1.0).
 func (s *Client) Timing(stat string, delta int64, rate float32) error {
+	if !s.includeStat(rate) {
+		return nil
+	}
+
+	return s.submit(stat, "", delta, "|ms", rate)
+}
+
+// TimingFloat submits a statsd timing type.
+// stat is a string name for the metric.
+// delta is the time duration value in milliseconds
+// rate is the sample rate (0.0 to 1.0).
+func (s *Client) TimingFloat(stat string, delta float64, rate float32) error {
 	if !s.includeStat(rate) {
 		return nil
 	}
