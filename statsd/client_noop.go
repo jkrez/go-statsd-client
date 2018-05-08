@@ -22,11 +22,27 @@ func (s *NoopClient) Inc(stat string, value int64, rate float32) error {
 	return nil
 }
 
+// IncFloat increments a statsd count type.
+// stat is a string name for the metric.
+// value is the integer value
+// rate is the sample rate (0.0 to 1.0)
+func (s *NoopClient) IncFloat(stat string, value float64, rate float32) error {
+	return nil
+}
+
 // Dec decrements a statsd count type.
 // stat is a string name for the metric.
 // value is the integer value.
 // rate is the sample rate (0.0 to 1.0).
 func (s *NoopClient) Dec(stat string, value int64, rate float32) error {
+	return nil
+}
+
+// DecFloat decrements a statsd count type.
+// stat is a string name for the metric.
+// value is the integer value.
+// rate is the sample rate (0.0 to 1.0).
+func (s *NoopClient) DecFloat(stat string, value float64, rate float32) error {
 	return nil
 }
 
@@ -69,6 +85,14 @@ func (s *NoopClient) GaugeFloatDelta(stat string, value float64, rate float32) e
 // delta is the time duration value in milliseconds
 // rate is the sample rate (0.0 to 1.0).
 func (s *NoopClient) Timing(stat string, delta int64, rate float32) error {
+	return nil
+}
+
+// TimingFloat submits a statsd timing type.
+// stat is a string name for the metric.
+// delta is the time duration value in milliseconds
+// rate is the sample rate (0.0 to 1.0).
+func (s *NoopClient) TimingFloat(stat string, delta float64, rate float32) error {
 	return nil
 }
 
